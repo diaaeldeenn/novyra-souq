@@ -16,7 +16,6 @@ import ProductImageCarousel from "@/components/ProductImageCarousel";
 import { authUserId } from "@/lib/nextAuth/authToken";
 import ProductReviews from "@/components/reviews/ProductReviews";
 import AddToWishlist from "../AddToWishlist";
-import { toast } from "sonner";
 
 export default async function ProductDetails({
   params,
@@ -24,12 +23,21 @@ export default async function ProductDetails({
   params: Promise<ProductIdType>;
 }) {
   const { productId } = await params;
+  console.log("Loading product:", productId);
   const response = await getSpecificProduct(productId);
+  console.log("Response received:", response);
 
   if (!response?.data) {
-    return toast.error("Product not found", {
-      position: "top-center",
-    });
+    console.log("No data returned from API");
+    return (
+      <div className="container mx-auto px-6 py-12 text-center">
+        <h1 className="text-2xl font-bold">Product not found</h1>
+        <p className="text-muted-foreground mt-2">
+          The product you're looking for doesn't exist.
+        </p>
+        <p className="text-sm text-gray-500 mt-4">ID: {productId}</p>
+      </div>
+    );
   }
 
   const product: ProductI = response.data;
