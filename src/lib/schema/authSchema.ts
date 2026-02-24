@@ -23,8 +23,7 @@ export const registerSchema = z
     rePassword: z.string().nonempty("RePassword Is Required"),
     phone: z
       .string()
-      .nonempty("Phone Is Required")
-      .regex(/^(?:\+|00)?[0-9]{7,15}$/, "Invalid Phone Number"),
+      .regex(/^01[0-2,5]{1}[0-9]{8}$/, "Invalid Egyptian phone number"),
   })
   .refine((data) => data.password === data.rePassword, {
     path: ["rePassword"],
@@ -97,7 +96,8 @@ export const updateProfilePasswordSchema = z
         "Password must contain at least one special character",
       ),
     rePassword: z.string().nonempty("RePassword Is Required"),
-  }).refine((data) => data.password === data.rePassword, {
+  })
+  .refine((data) => data.password === data.rePassword, {
     path: ["rePassword"],
     error: "Password Must Match",
   });
