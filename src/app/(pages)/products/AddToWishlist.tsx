@@ -1,11 +1,14 @@
 "use client";
-import { addToWhishList, removeFromWhishList } from "@/actions/whishlist";
+import {
+  addToWhishList,
+  removeFromWhishList,
+  getUserWishlist,
+} from "@/actions/whishlist";
 import { Spinner } from "@/components/ui/spinner";
 import { Heart } from "lucide-react";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { getUserWishlist } from "@/actions/whishlist";
 
 export default function AddToWishlist({
   idProduct,
@@ -30,9 +33,10 @@ export default function AddToWishlist({
       }
     };
     checkWishlist();
-  }, [idProduct]);
+  }, []); // Empty array = run only on mount
 
   async function addWishlist(productID: string) {
+    if (isLoading) return;
     setLoading(true);
     try {
       const res = await addToWhishList(productID);
@@ -51,6 +55,7 @@ export default function AddToWishlist({
   }
 
   async function deleteWishList(prodId: string) {
+    if (isLoading) return;
     setLoading(true);
     try {
       const res = await removeFromWhishList(prodId);

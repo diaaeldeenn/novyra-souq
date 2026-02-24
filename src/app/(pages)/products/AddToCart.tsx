@@ -12,6 +12,7 @@ export default function AddToCart({ idProduct }: { idProduct: string }) {
   const [isLoading, setLoading] = useState(false);
   const { handleCart } = useContext(counterProductContext);
   async function addCart(productID: string) {
+    if (isLoading) return;
     setLoading(true);
     try {
       const res = await addToCart(productID);

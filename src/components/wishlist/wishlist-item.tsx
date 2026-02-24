@@ -24,7 +24,7 @@ export default function WishlistItem({ item }: { item: WishlistCartI }) {
           />
         </Link>
 
-        <AddToWishlist idProduct={item._id} />
+        <AddToWishlist idProduct={item._id} absolute/>
       </div>
 
       <CardContent className="p-4">
