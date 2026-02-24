@@ -1,3 +1,8 @@
 {
-  "rewrites": [{ "source": "/:path((?!api).*)", "destination": "/" }]
+  "rewrites": [
+    {
+      "source": "/:path((?!api|products|cart|wishlist|categories|brands|profile|checkout|login|register|reset|allorders|_next|public).*)",
+      "destination": "/"
+    }
+  ]
 }
