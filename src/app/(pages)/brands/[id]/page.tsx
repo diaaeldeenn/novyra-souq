@@ -61,7 +61,7 @@ export default async function BrandProducts({ params }: { params: Promise<{ id: 
                           HOT
                         </div>
                       )}
-                      <AddToWishlist idProduct={product._id}/>
+                      <AddToWishlist absolute idProduct={product._id}/>
                     </div>
 
                     <CardHeader className="pb-3 lg:min-h-30">
