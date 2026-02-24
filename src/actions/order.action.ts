@@ -35,7 +35,7 @@ export async function createOnlineOrder(cartId: string,formData: AddressCheckout
     shippingAddress: formData,
   };
   try {
-    const response = await fetch(`${API_URL}/orders/checkout-session/${cartId}?url=http://localhost:3000`, {
+    const response = await fetch(`${API_URL}/orders/checkout-session/${cartId}?url=https://novyra-souq.vercel.app/`, {
       method: "POST",
       body: JSON.stringify(body),
       headers: {

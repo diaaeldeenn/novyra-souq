@@ -10,13 +10,13 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Fragment } from "react/jsx-runtime";
-import { Heart, Star, Package, Truck, Shield } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Star, Package, Truck, Shield } from "lucide-react";
 import AddToCart from "../AddToCart";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
 import { authUserId } from "@/lib/nextAuth/authToken";
 import ProductReviews from "@/components/reviews/ProductReviews";
 import AddToWishlist from "../AddToWishlist";
+import { toast } from "sonner";
 
 export default async function ProductDetails({
   params,
@@ -24,8 +24,15 @@ export default async function ProductDetails({
   params: Promise<ProductIdType>;
 }) {
   const { productId } = await params;
-  const { data } = await getSpecificProduct(productId);
-  const product: ProductI = data;
+  const response = await getSpecificProduct(productId);
+
+  if (!response?.data) {
+    return toast.error("Product not found", {
+      position: "top-center",
+    });
+  }
+
+  const product: ProductI = response.data;
   const currentUserId = await authUserId();
   return (
     <main className="min-h-screen py-12">
@@ -59,7 +66,10 @@ export default async function ProductDetails({
         </Breadcrumb>
 
         <div className="grid lg:grid-cols-2 gap-12 mb-16">
-          <ProductImageCarousel images={product?.images} title={product.title} />
+          <ProductImageCarousel
+            images={product?.images}
+            title={product.title}
+          />
           <div className="space-y-6">
             <div>
               <p className="text-sm font-bold text-primary uppercase mb-2">
@@ -102,7 +112,9 @@ export default async function ProductDetails({
               <p className="text-sm font-semibold text-muted-foreground mb-2">
                 DESCRIPTION
               </p>
-              <p className="text-base leading-relaxed">{product?.description}</p>
+              <p className="text-base leading-relaxed">
+                {product?.description}
+              </p>
             </div>
 
             <div className="flex items-baseline gap-3 py-6 border-y">
@@ -122,7 +134,7 @@ export default async function ProductDetails({
                 <AddToCart idProduct={product?._id} />
               </div>
               <div className="col-span-2">
-                <AddToWishlist idProduct={product?._id}/>
+                <AddToWishlist idProduct={product?._id} />
               </div>
             </div>
 
