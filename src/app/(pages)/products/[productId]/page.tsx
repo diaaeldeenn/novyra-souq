@@ -23,12 +23,9 @@ export default async function ProductDetails({
   params: Promise<ProductIdType>;
 }) {
   const { productId } = await params;
-  console.log("Loading product:", productId);
   const response = await getSpecificProduct(productId);
-  console.log("Response received:", response);
 
   if (!response?.data) {
-    console.log("No data returned from API");
     return (
       <div className="container mx-auto px-6 py-12 text-center">
         <h1 className="text-2xl font-bold">Product not found</h1>

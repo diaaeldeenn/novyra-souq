@@ -1,13 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import { getUserCart } from "@/actions/cart.action";
 import { CartI } from "@/interfaces/cart";
+import { useSession } from "next-auth/react";
 
 export function useCart() {
+  const { status } = useSession();
+
   return useQuery({
     queryKey: ["cart"],
     queryFn: getUserCart,
+    enabled: status === "authenticated",
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 5,
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     select: (res: CartI) => {
       try {
         if (!res || !res.data) {
@@ -37,7 +43,6 @@ export function useCart() {
           total,
         };
       } catch (err) {
-        console.log("Error in select:", err);
         return {
           cartId: "",
           products: [],

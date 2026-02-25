@@ -71,8 +71,9 @@ export default function Cart() {
               <div className="flex justify-end mb-6">
                 <Button
                   onClick={clearProducts}
+                  disabled={isClearing}
                   variant="outline"
-                  className="border-3 cursor-pointer hover:text-white border-destructive/50 text-destructive hover:bg-destructive font-bold transition-all hover:shadow-lg"
+                  className="border-3 cursor-pointer hover:text-white border-destructive/50 text-destructive hover:bg-destructive font-bold transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isClearing ? (
                     <Spinner />

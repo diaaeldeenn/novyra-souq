@@ -28,9 +28,7 @@ export default function AddToWishlist({
           (item: any) => item._id === idProduct,
         );
         setFill(isInWishlist || false);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     };
     checkWishlist();
   }, []); // Empty array = run only on mount
@@ -64,7 +62,6 @@ export default function AddToWishlist({
         position: "bottom-left",
       });
     } catch (error) {
-      console.log(error);
       toast.error("Can't Delete Product", {
         position: "bottom-left",
       });

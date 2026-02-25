@@ -22,7 +22,6 @@ export async function addToCart(productId: string) {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.log(error);
   }
 }
 
@@ -38,7 +37,6 @@ export async function getUserCart() {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }

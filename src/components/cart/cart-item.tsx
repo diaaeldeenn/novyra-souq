@@ -13,6 +13,7 @@ import { counterProductContext } from "@/context/countProducts";
 
 export default function CartItem({ item }: { item: CartProductI }) {
   const [isLoading, setLoading] = useState(false);
+  const [isUpdating, setUpdating] = useState(false);
   const queryClient = useQueryClient();
   const { handleCart } = useContext(counterProductContext);
 
@@ -31,9 +32,20 @@ export default function CartItem({ item }: { item: CartProductI }) {
   }
 
   async function updateItem(prodId: string, count: number) {
-    await updateUserItem(prodId, count);
-    queryClient.invalidateQueries({ queryKey: ["cart"] });
-    handleCart();
+    if (count < 1) {
+      await deleteItem(prodId);
+      return;
+    }
+    setUpdating(true);
+    try {
+      await updateUserItem(prodId, count);
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      handleCart();
+    } catch (error) {
+      toast.error("Failed to update item", { position: "bottom-left" });
+    } finally {
+      setUpdating(false);
+    }
   }
 
   return (
@@ -68,24 +80,27 @@ export default function CartItem({ item }: { item: CartProductI }) {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => updateItem(item.product._id, item.count - 1)}
-                  className="cursor-pointer p-2 rounded-lg border-2 border-border hover:border-primary hover:bg-primary/10 transition-all active:scale-95"
+                  disabled={isUpdating || isLoading}
+                  className="cursor-pointer p-2 rounded-lg border-2 border-border hover:border-primary hover:bg-primary/10 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Minus size={16} />
+                  {isUpdating ? <Spinner /> : <Minus size={16} />}
                 </button>
                 <span className="text-lg font-bold w-12 text-center">
                   {item.count}
                 </span>
                 <button
                   onClick={() => updateItem(item.product._id, item.count + 1)}
-                  className="cursor-pointer p-2 rounded-lg border-2 border-border hover:border-primary hover:bg-primary/10 transition-all active:scale-95"
+                  disabled={isUpdating || isLoading}
+                  className="cursor-pointer p-2 rounded-lg border-2 border-border hover:border-primary hover:bg-primary/10 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Plus size={16} />
+                  {isUpdating ? <Spinner /> : <Plus size={16} />}
                 </button>
               </div>
 
               <button
                 onClick={() => deleteItem(item.product._id)}
-                className="cursor-pointer p-2 rounded-lg hover:bg-destructive/10 text-destructive transition-all group"
+                disabled={isLoading || isUpdating}
+                className="cursor-pointer p-2 rounded-lg hover:bg-destructive/10 text-destructive transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? (
                   <Spinner />
