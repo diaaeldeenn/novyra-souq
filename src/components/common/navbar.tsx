@@ -98,6 +98,7 @@ export default function Navbar() {
 
           <Link
             href="/cart"
+            prefetch={false}
             className="p-2 rounded-lg hover:bg-accent/10 transition-colors relative"
           >
             <ShoppingCart className="size-5 text-muted-foreground hover:text-foreground transition-colors" />
