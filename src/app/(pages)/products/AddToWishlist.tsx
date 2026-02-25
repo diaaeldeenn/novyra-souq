@@ -10,35 +10,32 @@ import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-export default function AddToWishlist({
-  idProduct,
-  absolute = false,
-}: {
-  idProduct: string;
-  absolute?: boolean;
-}) {
-  const [fill, setFill] = useState(false);
-  const [isLoading, setLoading] = useState(false);
-  let wishlistIdsCache: Set<string> | null = null;
-  let wishlistIdsPromise: Promise<Set<string>> | null = null;
+let wishlistIdsCache: Set<string> | null = null;
+let wishlistIdsPromise: Promise<Set<string>> | null = null;
+async function getWishlistIds(): Promise<Set<string>> {
+  if (wishlistIdsCache) return wishlistIdsCache;
 
-  async function getWishlistIds(): Promise<Set<string>> {
-    if (wishlistIdsCache) return wishlistIdsCache;
-
-    if (!wishlistIdsPromise) {
-      wishlistIdsPromise = (async () => {
-        const res = await getUserWishlist();
-        const ids = new Set<string>(
-          (res?.data || []).map((item: any) => item._id),
-        );
-        wishlistIdsCache = ids;
-        return ids;
-      })();
-    }
-
-    return wishlistIdsPromise;
+  if (!wishlistIdsPromise) {
+    wishlistIdsPromise = (async () => {
+      const res = await getUserWishlist();
+      const ids = new Set<string>(
+        (res?.data || []).map((item: any) => item._id),
+      );
+      wishlistIdsCache = ids;
+      return ids;
+    })();
   }
 
+  return wishlistIdsPromise;
+}
+
+export default function AddToWishlist({idProduct,absolute = false,}:{idProduct: string;absolute?: boolean;}) {
+
+
+  const [fill, setFill] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+
+  
   useEffect(() => {
     const checkWishlist = async () => {
       try {
