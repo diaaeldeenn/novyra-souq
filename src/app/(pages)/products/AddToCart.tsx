@@ -6,11 +6,12 @@ import { counterProductContext } from "@/context/countProducts";
 import { ShoppingCart } from "lucide-react";
 import { useContext, useState } from "react";
 import { toast } from "sonner";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function AddToCart({ idProduct }: { idProduct: string }) {
   const [isLoading, setLoading] = useState(false);
   const { handleCart, setNumOfCartItems } = useContext(counterProductContext);
+  const router = useRouter();
   async function addCart(productID: string) {
     if (isLoading) return;
     setLoading(true);
@@ -38,7 +39,7 @@ export default function AddToCart({ idProduct }: { idProduct: string }) {
       toast.error(error.message, {
         position: "bottom-left",
       });
-      redirect("/login");
+      router.push("/login");
     } finally {
       setLoading(false);
     }
