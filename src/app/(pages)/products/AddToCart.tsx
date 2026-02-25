@@ -10,7 +10,7 @@ import { redirect } from "next/navigation";
 
 export default function AddToCart({ idProduct }: { idProduct: string }) {
   const [isLoading, setLoading] = useState(false);
-  const { handleCart } = useContext(counterProductContext);
+  const { handleCart, setNumOfCartItems } = useContext(counterProductContext);
   async function addCart(productID: string) {
     if (isLoading) return;
     setLoading(true);
@@ -19,7 +19,11 @@ export default function AddToCart({ idProduct }: { idProduct: string }) {
       toast.success("Product Added Successfully", {
         position: "bottom-left",
       });
-      handleCart();
+      if (typeof res?.numOfCartItems === "number") {
+        setNumOfCartItems(res.numOfCartItems);
+      } else {
+        handleCart();
+      }
     } catch (error: any) {
       toast.error(error.message, {
         position: "bottom-left",

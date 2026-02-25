@@ -19,25 +19,42 @@ export default function AddToWishlist({
 }) {
   const [fill, setFill] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  let wishlistIdsCache: Set<string> | null = null;
+  let wishlistIdsPromise: Promise<Set<string>> | null = null;
+
+  async function getWishlistIds(): Promise<Set<string>> {
+    if (wishlistIdsCache) return wishlistIdsCache;
+
+    if (!wishlistIdsPromise) {
+      wishlistIdsPromise = (async () => {
+        const res = await getUserWishlist();
+        const ids = new Set<string>(
+          (res?.data || []).map((item: any) => item._id),
+        );
+        wishlistIdsCache = ids;
+        return ids;
+      })();
+    }
+
+    return wishlistIdsPromise;
+  }
 
   useEffect(() => {
     const checkWishlist = async () => {
       try {
-        const res = await getUserWishlist();
-        const isInWishlist = res?.data?.some(
-          (item: any) => item._id === idProduct,
-        );
-        setFill(isInWishlist || false);
+        const ids = await getWishlistIds();
+        setFill(ids.has(idProduct));
       } catch (error) {}
     };
     checkWishlist();
-  }, []); // Empty array = run only on mount
+  }, [idProduct]);
 
   async function addWishlist(productID: string) {
     if (isLoading) return;
     setLoading(true);
     try {
-      const res = await addToWhishList(productID);
+      await addToWhishList(productID);
+      wishlistIdsCache?.add(productID);
       setFill(true);
       toast.success("Product Added Successfully", {
         position: "bottom-left",
@@ -56,7 +73,8 @@ export default function AddToWishlist({
     if (isLoading) return;
     setLoading(true);
     try {
-      const res = await removeFromWhishList(prodId);
+      await removeFromWhishList(prodId);
+      wishlistIdsCache?.delete(prodId);
       setFill(false);
       toast.success("Product Deleted Successfully", {
         position: "bottom-left",
