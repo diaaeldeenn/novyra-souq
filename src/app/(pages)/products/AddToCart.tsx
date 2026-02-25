@@ -19,7 +19,17 @@ export default function AddToCart({ idProduct }: { idProduct: string }) {
       toast.success("Product Added Successfully", {
         position: "bottom-left",
       });
-      if (typeof res?.numOfCartItems === "number") {
+      const totalItemsFromProducts = Array.isArray(res?.data?.products)
+        ? res.data.products.reduce(
+            (total: number, product: { count?: number }) =>
+              total + (product?.count ?? 0),
+            0,
+          )
+        : null;
+
+      if (typeof totalItemsFromProducts === "number") {
+        setNumOfCartItems(totalItemsFromProducts);
+      } else if (typeof res?.numOfCartItems === "number") {
         setNumOfCartItems(res.numOfCartItems);
       } else {
         handleCart();

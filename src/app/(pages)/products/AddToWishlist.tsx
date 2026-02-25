@@ -12,15 +12,14 @@ import { toast } from "sonner";
 
 let wishlistIdsCache: Set<string> | null = null;
 let wishlistIdsPromise: Promise<Set<string>> | null = null;
+
 async function getWishlistIds(): Promise<Set<string>> {
   if (wishlistIdsCache) return wishlistIdsCache;
 
   if (!wishlistIdsPromise) {
     wishlistIdsPromise = (async () => {
       const res = await getUserWishlist();
-      const ids = new Set<string>(
-        (res?.data || []).map((item: any) => item._id),
-      );
+      const ids = new Set<string>((res?.data || []).map((item: any) => item._id));
       wishlistIdsCache = ids;
       return ids;
     })();
@@ -35,7 +34,7 @@ export default function AddToWishlist({idProduct,absolute = false,}:{idProduct: 
   const [fill, setFill] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
-  
+
   useEffect(() => {
     const checkWishlist = async () => {
       try {
