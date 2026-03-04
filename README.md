@@ -88,7 +88,7 @@ Novyra Souq delivers a complete online shopping experience: secure authenticatio
 
 ---
 
-## 📁 Project Structure (High-Level)
+## 📁 Project Structure
 
 ```text
 src/
